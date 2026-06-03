@@ -112,10 +112,7 @@
                             }
                         }
                         
-                        // 사유 요약 깔끔히 가공
-                        const cleanReason = item.reason.replace(/\[.*?\\]\s*/, "");
-                        
-                        // 포맷: [선생님 이름] 선생님, [학생 이름], [반], [사유 요약], 호출왔습니다.
+                        const cleanReason = item.reason.replace(/\[.*?\]\s*/, "");
                         const speakSentence = matchedTeacher + ", " + item.student_name + ", " + item.location + ", " + cleanReason + ", 호출왔습니다.";
                         speakText(speakSentence);
                     }
@@ -173,7 +170,7 @@
                     }
                 }
                 if (matchedTeacher) {
-                    const cleanReason = item.reason.replace(/\[.*?\\]\s*/, "");
+                    const cleanReason = item.reason.replace(/\[.*?\]\s*/, "");
                     teacherMap[matchedTeacher].push({
                         name: item.student_name,
                         location: item.location,
