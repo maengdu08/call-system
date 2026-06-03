@@ -121,15 +121,15 @@
         
         <form id="callForm">
             <div class="form-group">
-                <label for="studentName">학생 이름</label>
-                <input type="text" id="studentName" required placeholder="이름을 입력하세요 (예: 홍길동)">
+                <label for="studentName">학생 학번 및 이름</label>
+                <input type="text" id="studentName" required placeholder="학번과 이름을 입력하세요 (예: 30101 홍길동)">
             </div>
 
             <div class="form-group">
                 <label for="teacherSelect">호출할 선생님 선택</label>
                 <select id="teacherSelect" required>
                     <option value="" disabled selected>선생님을 선택해 주세요</option>
-<option value="김건우 선생님 (국어)">김건우 선생님 (국어)</option>
+                    <option value="김건우 선생님 (국어)">김건우 선생님 (국어)</option>
 <option value="김영민 선생님 (사회)">김영민 선생님 (사회)</option>
 <option value="노여진 선생님 (국어)">노여진 선생님 (국어)</option>
 <option value="박기만 선생님 (윤리)">박기만 선생님 (윤리)</option>
@@ -157,23 +157,24 @@
                     <option value="8반">8반</option>
                     <option value="9반">9반</option>
                     <option value="10반">10반</option>
+                    <option value="11반">11반</option>
+                    <option value="12반">12반</option>
                 </select>
             </div>
             
             <div class="form-group">
-                <label for="reasonInput">무엇을 도와드릴까요? (구체적 사유)</label>
-                <input type="text" id="reasonInput" required placeholder="예: 수행평가 질문 있습니다, 과제 제출">
+                <label for="reason">구체적 사유 요약</label>
+                <input type="text" id="reason" required placeholder="예: 질문, 과제 제출, 상담 등">
             </div>
             
             <button type="submit" id="submitBtn">선생님 호출하기</button>
         </form>
         
-        <!-- 결과 메시지가 표시되는 상자 -->
         <div id="msgBox" class="message"></div>
     </div>
 
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyUAz31gP05-tBSEsjBPa5x7MKZbMGWP7SgIGBLyZRvwfENYgH_zRpgRy5TUMbzQKql0w/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzwierKm1WOXh8UgnAoZsUAkwuwNqqUiRhjV7gGM-Q4pcEP5eXuzzkFB2DNMY-W0N-JNA/exec";
 
         document.getElementById('callForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -184,10 +185,10 @@
             const name = document.getElementById('studentName').value;
             const teacher = document.getElementById('teacherSelect').value;
             const selectedClass = document.getElementById('locationClass').value;
-            const textReason = document.getElementById('reasonInput').value;
+            const reasonType = document.getElementById('reason').value;
             
             const finalLocation = selectedClass; 
-            const finalReason = "[" + teacher + "] " + textReason;
+            const finalReason = "[" + teacher + "] " + reasonType;
 
             submitBtn.disabled = true;
             submitBtn.innerText = "호출 전송 중...";
@@ -213,17 +214,19 @@
                     msgBox.style.display = "block";
                     submitBtn.innerText = "접수 완료";
                     
+                    document.getElementById('reason').value = ""; // 사유 초기화
+                    
                     setTimeout(() => {
                         submitBtn.disabled = false;
                         submitBtn.innerText = "선생님 호출하기";
-                    }, 20000);
+                    }, 5000);
                 } else {
                     throw new Error(data.error || "서버 에러");
                 }
             })
             .catch(err => {
                 msgBox.className = "message error";
-                msgBox.innerHTML = "<strong>❌ 전송 실패</strong><br>네트워크가 불안정합니다. 손을 들어 선생님을 불러주세요.";
+                msgBox.innerHTML = "<strong>❌ 전송 실패</strong><br>네트워크가 불안정합니다. 새로고침 후 다시 시도하거나 교무실로 직접 방문해 주세요.";
                 msgBox.style.display = "block";
                 submitBtn.disabled = false;
                 submitBtn.innerText = "선생님 호출하기";
