@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선생님 호출 시스템 (학생용)</title>
+    <style>
+        /* 깔끔하고 직관적인 모바일 최적화 디자인 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2);
+            width: 100%;
+            max-width: 420px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 14px;
+            color: #64748b;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s;
+            outline: none;
+            background-color: #f8fafc;
+        }
+        input:focus, select:focus {
+            border-color: #3b82f6;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
+        button:active {
+            transform: scale(0.99);
+        }
+        button:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+            line-height: 1.5;
+        }
+        .success {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        .error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>🙋‍♂️ 선생님, 도와주세요!</h1>
+            <p>정보를 입력하고 아래 버튼을 누르면 접수됩니다.</p>
+        </div>
+        
+        <form id="callForm">
+            <div class="form-group">
+                <label for="studentName">이름</label>
+                <input type="text" id="studentName" required placeholder="이름을 입력하세요 (예: 홍길동)">
+            </div>
+            
+            <div class="form-group">
+                <label for="location">현재 위치</label>
+                <input type="text" id="location" required placeholder="예: 3모둠, 창가 쪽 12번 자리">
+            </div>
+            
+            <div class="form-group">
+                <label for="reason">무엇을 도와드릴까요?</label>
+                <select id="reason" required>
+                    <option value="" disabled selected>사유를 선택해 주세요</option>
+                    <option value="질문이 있어요">질문이 있어요 ❓</option>
+                    <option value="컴퓨터/장비가 안 돼요">컴퓨터/장비가 안 돼요 💻</option>
+                    <option value="실습 과제를 완료했어요">실습 과제를 완료했어요 ✅</option>
+                    <option value="기타 도움이 필요해요">기타 도움이 필요해요 🙏</option>
+                </select>
+            </div>
+            
+            <button type="submit" id="submitBtn">선생님 호출하기</button>
+        </form>
+        
+        <!-- 결과 메시지가 표시되는 상자 -->
+        <div id="msgBox" class="message"></div>
+    </div>
+
+    <script>
+        // ⚠️ [중요] 지난 단계에서 복사해 둔 구글 Apps Script 웹 앱 URL 주소를 아래 큰따옴표 안에 붙여넣으세요!
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxvmxZtofkVzIuwgtj581coW0v4QN86YXi5si4YeQ8Cb5aAE6DKsQmgr8kh2flq2j7HMw/exec";
+
+        document.getElementById('callForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // 폼 제출 시 페이지가 새로고침되는 것을 막습니다.
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const msgBox = document.getElementById('msgBox');
+            
+            // 입력된 값 가져오기
+            const name = document.getElementById('studentName').value;
+            const location = document.getElementById('location').value;
+            const reason = document.getElementById('reason').value;
+            
+            // 버튼을 비활성화해서 연속 클릭(도배)을 방지합니다.
+            submitBtn.disabled = true;
+            submitBtn.innerText = "호출 전송 중...";
+            msgBox.style.display = "none";
+
+            // URL 수정을 안 했을 때 알림
+            if(GAS_URL === "https://script.google.com/macros/s/AKfycbxvmxZtofkVzIuwgtj581coW0v4QN86YXi5si4YeQ8Cb5aAE6DKsQmgr8kh2flq2j7HMw/exec") {
+                alert("코드 내부의 GAS_URL 주소를 본인의 Apps Script 주소로 변경해야 작동합니다!");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "선생님 호출하기";
+                return;
+            }
+            
+            // 구글 Apps Script(백엔드)로 데이터 전송
+            fetch(GAS_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain" // CORS 해결을 위한 설정
+                },
+                body: JSON.stringify({
+                    action: "createCall",
+                    student_name: name,
+                    location: location,
+                    reason: reason
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    // 호출 성공 시 화면 처리
+                    msgBox.className = "message success";
+                    msgBox.innerHTML = "<strong>🔔 호출 성공!</strong><br>선생님께 대기열이 등록되었습니다. 자기 자리에서 차분히 기다려주세요.";
+                    msgBox.style.display = "block";
+                    submitBtn.innerText = "접수 완료";
+                    
+                    // 호출 후 다른 친구들을 위해 30초 뒤에 다시 입력할 수 있게 풀어줍니다.
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "선생님 호출하기";
+                    }, 30000);
+                } else {
+                    throw new Error(data.error || "서버 에러");
+                }
+            })
+            .catch(err => {
+                // 네트워크 오류나 주소 오류 시 예외 처리
+                msgBox.className = "message error";
+                msgBox.innerHTML = "<strong>❌ 전송 실패</strong><br>네트워크가 불안정합니다. 화면을 보여주거나 손을 들어 선생님을 불러주세요.";
+                msgBox.style.display = "block";
+                submitBtn.disabled = false;
+                submitBtn.innerText = "선생님 호출하기";
+            });
+        });
+    </script>
+</body>
+</html>
