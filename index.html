@@ -175,7 +175,7 @@
 
     <script>
         // ⚠️ [중요] 구글 Apps Script 웹 앱 URL 주소를 아래 큰따옴표 안에 붙여넣으세요!
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxvmxZtofkVzIuwgtj581coW0v4QN86YXi5si4YeQ8Cb5aAE6DKsQmgr8kh2flq2j7HMw/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzDc5PM6lachSJ7KJpwTXNtxsw9W2XZENPa6Ain_FrjmStQYWRhW3JPZ3DbRvlaGH5u_w/exec";
 
         document.getElementById('callForm').addEventListener('submit', function(e) {
             e.preventDefault(); // 새로고침 방지
@@ -198,7 +198,7 @@
             submitBtn.innerText = "호출 전송 중...";
             msgBox.style.display = "none";
 
-            if(GAS_URL === "https://script.google.com/macros/s/AKfycbxvmxZtofkVzIuwgtj581coW0v4QN86YXi5si4YeQ8Cb5aAE6DKsQmgr8kh2flq2j7HMw/exec") {
+            if(GAS_URL === "https://script.google.com/macros/s/AKfycbzDc5PM6lachSJ7KJpwTXNtxsw9W2XZENPa6Ain_FrjmStQYWRhW3JPZ3DbRvlaGH5u_w/exec") {
                 alert("코드 내부의 GAS_URL 주소를 본인의 Apps Script 주소로 변경해야 작동합니다!");
                 submitBtn.disabled = false;
                 submitBtn.innerText = "선생님 호출하기";
