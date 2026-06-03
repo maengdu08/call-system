@@ -162,14 +162,8 @@
             </div>
             
             <div class="form-group">
-                <label for="reason">무엇을 도와드릴까요?</label>
-                <select id="reason" required>
-                    <option value="" disabled selected>사유를 선택해 주세요</option>
-                    <option value="질문">질문 ❓</option>
-                    <option value="과제 제출">과제 제출 📝</option>
-                    <option value="상담">상담 🤝</option>
-                    <option value="기타">기타 도움 🙏</option>
-                </select>
+                <label for="reasonInput">무엇을 도와드릴까요? (구체적 사유)</label>
+                <input type="text" id="reasonInput" required placeholder="예: 수행평가 질문 있습니다, 과제 제출">
             </div>
             
             <button type="submit" id="submitBtn">선생님 호출하기</button>
@@ -193,11 +187,11 @@
             const name = document.getElementById('studentName').value;
             const teacher = document.getElementById('teacherSelect').value;
             const selectedClass = document.getElementById('locationClass').value;
-            const reasonType = document.getElementById('reason').value;
+            const textReason = document.getElementById('reasonInput').value;
             
-            // 기존 시트 양식(location, reason)에 맞게 데이터를 조합합니다.
+            // 기존 대시보드 양식(location, reason)에 맞춰 데이터를 조합합니다.
             const finalLocation = selectedClass; 
-            const finalReason = "[" + teacher + "] " + reasonType;
+            const finalReason = "[" + teacher + "] " + textReason;
 
             // 버튼 비활성화
             submitBtn.disabled = true;
