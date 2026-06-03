@@ -5,58 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3학년 교무실 실시간 호출 현황판</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px; min-height: 100vh; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #1e293b; padding-bottom: 15px; margin-bottom: 25px; }
-        .header h1 { font-size: 28px; color: #38bdf8; display: flex; align-items: center; gap: 10px; }
-        .right-area { display: flex; align-items: center; gap: 15px; }
-        .clock { font-size: 18px; color: #94a3b8; background: #1e293b; padding: 8px 16px; border-radius: 20px; font-weight: bold; }
-        .tts-btn { background-color: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; font-size: 14px; }
-        .tts-btn.active { background-color: #10b981; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
-        .teacher-card { background-color: #1e293b; border-radius: 12px; padding: 20px; border: 1px solid #334155; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: all 0.3s; }
-        .teacher-card.has-call { border-color: #ef4444; background-color: #1a1625; }
-        .teacher-name { font-size: 20px; font-weight: bold; color: #ffffff; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .badge { font-size: 13px; padding: 4px 10px; border-radius: 12px; font-weight: normal; }
-        .badge.waiting { background-color: #ef4444; color: white; animation: blink 1.5s infinite; }
-        .badge.empty { background-color: #475569; color: #cbd5e1; }
-        .call-item { background: #273549; padding: 14px; border-radius: 8px; margin-bottom: 12px; border-left: 5px solid #38bdf8; display: flex; justify-content: space-between; align-items: center; }
-        .call-item:last-child { margin-bottom: 0; }
-        .info-area { flex: 1; }
-        .student-info { font-weight: bold; font-size: 17px; color: #f1f5f9; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-        .location-tag { color: #f59e0b; font-size: 15px; }
-        .reason-text { font-size: 16px; font-weight: 600; color: #fbbf24; background-color: #334155; padding: 8px 12px; border-radius: 6px; display: inline-block; word-break: break-all; margin-top: 4px; }
-        .complete-btn { background-color: #22c55e; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; margin-left: 15px; height: fit-content; white-space: nowrap; }
-        .complete-btn:hover { background-color: #16a34a; }
-        .complete-btn:disabled { background-color: #475569; cursor: not-allowed; }
-        .loading { text-align: center; font-size: 20px; color: #94a3b8; grid-column: 1 / -1; padding: 50px; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #1e293b;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            font-size: 28px;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .clock {
+            font-size: 18px;
+            color: #94a3b8;
+            background: #1e293b;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        .teacher-card {
+            background-color: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        .teacher-card.has-call {
+            border-color: #ef4444;
+            background-color: #1a1625; 
+        }
+        .teacher-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .badge {
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: normal;
+        }
+        .badge.waiting {
+            background-color: #ef4444;
+            color: white;
+            animation: blink 1.5s infinite;
+        }
+        .badge.empty {
+            background-color: #475569;
+            color: #cbd5e1;
+        }
+        .call-item {
+            background: #273549;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #38bdf8;
+        }
+        .call-item:last-child {
+            margin-bottom: 0;
+        }
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 16px;
+            color: #f1f5f9;
+            margin-bottom: 5px;
+        }
+        .reason-text {
+            font-size: 14px;
+            color: #94a3b8;
+            word-break: break-all;
+        }
+        .loading {
+            text-align: center;
+            font-size: 20px;
+            color: #94a3b8;
+            grid-column: 1 / -1;
+            padding: 50px;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
+
     <div class="header">
         <h1>🔔 3학년 교무실 실시간 호출 현황판</h1>
-        <div class="right-area">
-            <button class="tts-btn" id="ttsToggleBtn" onclick="enableTTS()">🔊 음성 알림 활성화</button>
-            <div class="clock" id="liveClock">로딩 중...</div>
-        </div>
+        <div class="clock" id="liveClock">로딩 중...</div>
     </div>
+
     <div class="grid-container" id="boardGrid">
         <div class="loading">호출 데이터를 불러오는 중입니다...</div>
     </div>
 
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwpmwTaaDrCtvn-YzzvEDp6yqROrGFSi9UieT5WqVLafDrbSYJhs8I-ywlN4mDFD6-EuQ/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyUAz31gP05-tBSEsjBPa5x7MKZbMGWP7SgIGBLyZRvwfENYgH_zRpgRy5TUMbzQKql0w/exec";
         
         const teachers = [
             "김건우 선생님", "김영민 선생님", "노여진 선생님", "박기만 선생님", 
             "이의진 선생님", "이필권 선생님", "이주영 선생님", "홍지연 선생님", 
             "강만규 선생님", "최아현 선생님", "채정태 선생님"
         ];
-
-        let ttsEnabled = false;
-        let knownCallKeys = new Set();
-        let isFirstLoad = true;
 
         function updateClock() {
             const now = new Date();
@@ -65,100 +147,16 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        function enableTTS() {
-            ttsEnabled = true;
-            const btn = document.getElementById('ttsToggleBtn');
-            btn.innerText = "🟢 음성 알림 작동 중";
-            btn.className = "tts-btn active";
-            
-            // 브라우저 권한 획득용 무음 재생
-            const utterance = new SpeechSynthesisUtterance("");
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function speakText(text) {
-            if (!ttsEnabled) return;
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "ko-KR";
-            utterance.rate = 1.0;
-            window.speechSynthesis.speak(utterance);
-        }
-
         function fetchCalls() {
             fetch(GAS_URL + "?action=getCalls")
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        processNewCalls(data.data);
                         renderBoard(data.data);
                     }
                 })
                 .catch(err => console.error("데이터 로드 실패:", err));
         }
-
-        function processNewCalls(calls) {
-            let currentKeys = new Set();
-
-            calls.forEach(item => {
-                // 고유 키 생성 (이름 + 위치 + 사유전체)
-                const key = item.student_name + "_" + item.location + "_" + item.reason;
-                currentKeys.add(key);
-
-                if (!knownCallKeys.has(key)) {
-                    // 첫 로드가 아닐 때 새로운 호출 발견 시 음성 안내
-                    if (!isFirstLoad) {
-                        let matchedTeacher = "선생님";
-                        for (let t of teachers) {
-                            if (item.reason && item.reason.includes(t)) {
-                                matchedTeacher = t; // 예: "김건우 선생님"
-                                break;
-                            }
-                        }
-                        
-                        // 사유 요약 (괄호 안의 대괄호 태그 제거)
-                        const cleanReason = item.reason.replace(/\[.*?\\]\s*/, "");
-                        
-                        // 포맷: [선생님 이름] 선생님, [학생 이름], [반], [사유 요약], 호출왔습니다.
-                        const speakSentence = `${matchedTeacher}, ${item.student_name}, ${item.location}, ${cleanReason}, 호출왔습니다.`;
-                        speakText(speakSentence);
-                    }
-                }
-            });
-
-            knownCallKeys = currentKeys;
-            isFirstLoad = false;
-        }
-
-        window.completeCall = function(btnElement, studentName, location, originalReason) {
-            btnElement.disabled = true;
-            btnElement.innerText = "처리 중...";
-            
-            fetch(GAS_URL, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify({
-                    action: "completeCall", 
-                    student_name: studentName,
-                    location: location,
-                    reason: originalReason
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success) {
-                    fetchCalls(); 
-                } else {
-                    alert("삭제 실패: " + data.error);
-                    btnElement.disabled = false;
-                    btnElement.innerText = "완료 ✔";
-                }
-            })
-            .catch(err => {
-                alert("통신 오류가 발생했습니다.");
-                btnElement.disabled = false;
-                btnElement.innerText = "완료 ✔";
-            });
-        };
 
         function renderBoard(calls) {
             const grid = document.getElementById('boardGrid');
@@ -175,13 +173,13 @@
                         break;
                     }
                 }
+
                 if (matchedTeacher) {
                     const cleanReason = item.reason.replace(/\[.*?\\]\s*/, "");
                     teacherMap[matchedTeacher].push({
                         name: item.student_name,
                         location: item.location,
-                        cleanReason: cleanReason,
-                        originalReason: item.reason 
+                        reason: cleanReason
                     });
                 }
             });
@@ -189,38 +187,40 @@
             teachers.forEach(t => {
                 const list = teacherMap[t];
                 const hasCall = list.length > 0;
+                
                 const card = document.createElement('div');
                 card.className = `teacher-card ${hasCall ? 'has-call' : ''}`;
 
                 let badgeHtml = hasCall ? `<span class="badge waiting">대기 ${list.length}명</span>` : `<span class="badge empty">대기 없음</span>`;
-                let cardHtml = `<div class="teacher-name"><span>${t}</span>${badgeHtml}</div>`;
+                
+                let cardHtml = `
+                    <div class="teacher-name">
+                        <span>${t}</span>
+                        ${badgeHtml}
+                    </div>
+                `;
 
                 if (hasCall) {
                     list.forEach(student => {
-                        const safeName = student.name.replace(/'/g, "\\'").replace(/"/g, '\\"');
-                        const safeLoc = student.location.replace(/'/g, "\\'").replace(/"/g, '\\"');
-                        const safeReason = student.originalReason.replace(/'/g, "\\'").replace(/"/g, '\\"');
-
                         cardHtml += `
                             <div class="call-item">
-                                <div class="info-area">
-                                    <div class="student-info">
-                                        <span>👤 ${student.name}</span>
-                                        <span class="location-tag">📍 ${student.location}</span>
-                                    </div>
-                                    <div class="reason-text">💬 ${student.cleanReason}</div>
+                                <div class="student-info">
+                                    <span>👤 ${student.name}</span>
+                                    <span style="color: #f59e0b;">📍 ${student.location}</span>
                                 </div>
-                                <button class="complete-btn" onclick="completeCall(this, '${safeName}', '${safeLoc}', '${safeReason}')">완료 ✔</button>
+                                <div class="reason-text">${student.reason}</div>
                             </div>
                         `;
                     });
                 } else {
                     cardHtml += `<p style="color: #475569; font-size: 14px; text-align: center; padding: 20px 0;">현재 호출이 없습니다.</p>`;
                 }
+
                 card.innerHTML = cardHtml;
                 grid.appendChild(card);
             });
         }
+
         setInterval(fetchCalls, 5000);
         fetchCalls();
     </script>
