@@ -12,7 +12,7 @@
         }
         body {
             font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-            background-color: #0f172a; /* 어두운 네이비 배경 (전광판 느낌) */
+            background-color: #0f172a;
             color: #f8fafc;
             padding: 20px;
             min-height: 100vh;
@@ -27,7 +27,7 @@
         }
         .header h1 {
             font-size: 28px;
-            color: #38bdf8; /* 밝은 푸른색 */
+            color: #38bdf8;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -54,7 +54,7 @@
             transition: all 0.3s;
         }
         .teacher-card.has-call {
-            border-color: #ef4444; /* 호출 있으면 빨간 테두리 */
+            border-color: #ef4444;
             background-color: #1a1625; 
         }
         .teacher-name {
@@ -132,16 +132,14 @@
     </div>
 
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbzDc5PM6lachSJ7KJpwTXNtxsw9W2XZENPa6Ain_FrjmStQYWRhW3JPZ3DbRvlaGH5u_w/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxDc5PM6lachSJ7KJpwTXNtxsw9W2XZENPa6Ain_FrjmStQYWRhW3JPZ3DbRvlaGH5u_w/exec";
         
-        // 3학년 선생님 목록 배열
         const teachers = [
             "김건우 선생님", "김영민 선생님", "노여진 선생님", "박기만 선생님", 
             "이의진 선생님", "이필권 선생님", "이주영 선생님", "홍지연 선생님", 
             "강만규 선생님", "최아현 선생님", "채정태 선생님"
         ];
 
-        // 시계 기능
         function updateClock() {
             const now = new Date();
             document.getElementById('liveClock').innerText = now.toLocaleTimeString();
@@ -149,7 +147,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 실시간 데이터 로딩 기능
         function fetchCalls() {
             fetch(GAS_URL + "?action=getCalls")
                 .then(res => res.json())
@@ -163,16 +160,12 @@
 
         function renderBoard(calls) {
             const grid = document.getElementById('boardGrid');
-            grid.innerHTML = ""; // 기존 내용 초기화
+            grid.innerHTML = "";
 
-            // 각 선생님별로 호출을 분류할 객체 생성
             const teacherMap = {};
             teachers.forEach(t => { teacherMap[t] = []; });
 
-            // 들어온 전체 호출 데이터를 분석하여 매칭되는 선생님께 할당
             calls.forEach(item => {
-                // item.reason 예시: "[홍지연 선생님 (영어)] 수행평가 질문 있습니다"
-                // 어떤 선생님 명단이 포함되어 있는지 확인합니다.
                 let matchedTeacher = null;
                 for (let t of teachers) {
                     if (item.reason && item.reason.includes(t)) {
@@ -182,8 +175,7 @@
                 }
 
                 if (matchedTeacher) {
-                    // 대시보드에 뿌려줄 때는 사유에서 [선생님 이름] 부분을 잘라내고 순수 사유만 추출
-                    const cleanReason = item.reason.replace(/\[.*?\]\s*/, "");
+                    const cleanReason = item.reason.replace(/\[.*?\\]\s*/, "");
                     teacherMap[matchedTeacher].push({
                         name: item.student_name,
                         location: item.location,
@@ -192,7 +184,6 @@
                 }
             });
 
-            // 화면에 카드 배치하기
             teachers.forEach(t => {
                 const list = teacherMap[t];
                 const hasCall = list.length > 0;
@@ -200,7 +191,6 @@
                 const card = document.createElement('div');
                 card.className = `teacher-card ${hasCall ? 'has-call' : ''}`;
 
-                // 카드 상단 (선생님 성함 및 대기 뱃지)
                 let badgeHtml = hasCall ? `<span class="badge waiting">대기 ${list.length}명</span>` : `<span class="badge empty">대기 없음</span>`;
                 
                 let cardHtml = `
@@ -210,7 +200,6 @@
                     </div>
                 `;
 
-                // 카드 내부 (학생 호출 리스트)
                 if (hasCall) {
                     list.forEach(student => {
                         cardHtml += `
@@ -232,9 +221,8 @@
             });
         }
 
-        // 5초마다 자동으로 데이터를 새로고침 (실시간 반영)
         setInterval(fetchCalls, 5000);
-        fetchCalls(); // 처음 켰을 때도 즉시 로드
+        fetchCalls();
     </script>
 </body>
 </html>

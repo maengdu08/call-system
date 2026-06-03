@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>선생님 호출 시스템 (학생용)</title>
     <style>
-        /* 깔끔하고 직관적인 모바일 최적화 디자인 */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -130,17 +129,17 @@
                 <label for="teacherSelect">호출할 선생님 선택</label>
                 <select id="teacherSelect" required>
                     <option value="" disabled selected>선생님을 선택해 주세요</option>
-                    <option value="김건우 선생님 (국어)">김건우 선생님 (국어)</option>
-                    <option value="김영민 선생님 (사회)">김영민 선생님 (사회)</option>
-                    <option value="노여진 선생님 (국어)">노여진 선생님 (국어)</option>
-                    <option value="박기만 선생님 (윤리)">박기만 선생님 (윤리)</option>
-                    <option value="이의진 선생님 (체육)">이의진 선생님 (체육)</option>
-                    <option value="이필권 선생님 (미술)">이필권 선생님 (미술)</option>
-                    <option value="이주영 선생님 (화학)">이주영 선생님 (화학)</option>
-                    <option value="홍지연 선생님 (영어)">홍지연 선생님 (영어)</option>
-                    <option value="강만규 선생님 (물리학)">강만규 선생님 (물리학)</option>
-                    <option value="최아현 선생님 (지구과학)">최아현 선생님 (지구과학)</option>
-                    <option value="채정태 선생님 (수학)">채정태 선생님 (수학)</option>
+<option value="김건우 선생님 (국어)">김건우 선생님 (국어)</option>
+<option value="김영민 선생님 (사회)">김영민 선생님 (사회)</option>
+<option value="노여진 선생님 (국어)">노여진 선생님 (국어)</option>
+<option value="박기만 선생님 (윤리)">박기만 선생님 (윤리)</option>
+<option value="이의진 선생님 (체육)">이의진 선생님 (체육)</option>
+<option value="이필권 선생님 (미술)">이필권 선생님 (미술)</option>
+<option value="이주영 선생님 (화학)">이주영 선생님 (화학)</option>
+<option value="홍지연 선생님 (영어)">홍지연 선생님 (영어)</option>
+<option value="강만규 선생님 (물리학)">강만규 선생님 (물리학)</option>
+<option value="최아현 선생님 (지구과학)">최아현 선생님 (지구과학)</option>
+<option value="채정태 선생님 (수학)">채정태 선생님 (수학)</option>
                 </select>
             </div>
             
@@ -174,38 +173,26 @@
     </div>
 
     <script>
-        // ⚠️ [중요] 구글 Apps Script 웹 앱 URL 주소를 아래 큰따옴표 안에 붙여넣으세요!
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbzDc5PM6lachSJ7KJpwTXNtxsw9W2XZENPa6Ain_FrjmStQYWRhW3JPZ3DbRvlaGH5u_w/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxDc5PM6lachSJ7KJpwTXNtxsw9W2XZENPa6Ain_FrjmStQYWRhW3JPZ3DbRvlaGH5u_w/exec";
 
         document.getElementById('callForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // 새로고침 방지
+            e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
             const msgBox = document.getElementById('msgBox');
             
-            // 입력된 값 가져오기
             const name = document.getElementById('studentName').value;
             const teacher = document.getElementById('teacherSelect').value;
             const selectedClass = document.getElementById('locationClass').value;
             const textReason = document.getElementById('reasonInput').value;
             
-            // 기존 대시보드 양식(location, reason)에 맞춰 데이터를 조합합니다.
             const finalLocation = selectedClass; 
             const finalReason = "[" + teacher + "] " + textReason;
 
-            // 버튼 비활성화
             submitBtn.disabled = true;
             submitBtn.innerText = "호출 전송 중...";
             msgBox.style.display = "none";
-
-            if(GAS_URL === "https://script.google.com/macros/s/AKfycbzDc5PM6lachSJ7KJpwTXNtxsw9W2XZENPa6Ain_FrjmStQYWRhW3JPZ3DbRvlaGH5u_w/exec") {
-                alert("코드 내부의 GAS_URL 주소를 본인의 Apps Script 주소로 변경해야 작동합니다!");
-                submitBtn.disabled = false;
-                submitBtn.innerText = "선생님 호출하기";
-                return;
-            }
             
-            // 구글 Apps Script로 데이터 전송
             fetch(GAS_URL, {
                 method: "POST",
                 headers: {
